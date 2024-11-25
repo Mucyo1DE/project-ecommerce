@@ -1,0 +1,45 @@
+<?php
+// Database connection settings
+$servername = "localhost";
+$username = "root";  // Replace with your database username
+$password = "";      // Replace with your database password
+$dbname = "product_database";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Delete product
+if (isset($_GET['delete_id'])) {
+    $delete_id = $_GET['delete_id'];
+
+    // First, get the image path from the database before deletion
+    $sql = "SELECT image_path FROM products WHERE id = '$delete_id'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $image_path = $row['image_path'];
+
+        // Delete the product from the database
+        $delete_sql = "DELETE FROM products WHERE id = '$delete_id'";
+        if ($conn->query($delete_sql) === TRUE) {
+            // Delete the image from the server
+            if (file_exists($image_path)) {
+                unlink($image_path);
+            }
+            ?>
+<script>
+    alert('New product uploaded succesfully');
+</script>
+<?php
+
+        include('all_products.php');
+        } else {
+            echo "Error deleting product: " . $conn->error;
+        }
+    }
+}

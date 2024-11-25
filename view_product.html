@@ -1,0 +1,44 @@
+<?php
+// Database connection settings
+$servername = "localhost";
+$username = "root";  // Replace with your database username
+$password = "";      // Replace with your database password
+$dbname = "product_database";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch products from the database
+$sql = "SELECT * FROM products";
+$result = $conn->query($sql);
+
+// Check if there are products in the database
+if ($result->num_rows > 0) {
+    // Start the table to display data
+    echo "<table border='1' cellpadding='10' cellspacing='0'>";
+    echo "<tr><th>ID</th><th>Product Name</th><th>Price</th><th>Image</th><th>Published Date</th><th>Created At</th></tr>";
+
+    // Output data for each product
+    while($row = $result->fetch_assoc()) {
+        echo "<tr>";
+        echo "<td>" . $row['id'] . "</td>";
+        echo "<td>" . $row['product_name'] . "</td>";
+        echo "<td>$" . number_format($row['price'], 2) . "</td>";
+        echo "<td><img src='" . $row['image_path'] . "' alt='" . $row['product_name'] . "' width='100'></td>";
+        echo "<td>" . $row['published_date'] . "</td>";
+        echo "<td>" . $row['created_at'] . "</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+} else {
+    echo "No products found.";
+}
+
+// Close the database connection
+$conn->close();
+?>

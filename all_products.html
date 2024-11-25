@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>TIMELESS TREASURES</title>
+	
+        <link rel="stylesheet" href="css/home.css">
+        <link rel="stylesheet" href="css/view_table.css">
+</head>
+<body>
+	<div id="heading">
+		<div>
+			<header>&nbsp; &nbsp; &nbsp; &nbsp; we open:Mon-Sat 8:00-17:00 &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+        &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+        &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp(+250)788887505 | timelesstre@gmail.com |&nbsp &nbsp </header>
+		</div>
+		<div id="wlcm">
+			<h1><center> WELCOME TO TIMELESS TREASURES</center> </h1>
+		<div id="link">
+		  <nav>
+        <a href="index.html">HOME</a>
+        <a href="all_products.html">ALL PRODUCTS</a>
+        <a href="add_product.html">ADD PRODUCT</a>
+        <a href="about.html">ABOUT US</a>
+        <a href="contact.html">CONTACT US</a>
+        <a href="logout.html">LOG OUT</a>
+        </nav>
+		</div>
+	</div>
+</div>
+
+
+
+<?php
+// Database connection settings
+$servername = "localhost";
+$username = "root";  // Replace with your database username
+$password = "";      // Replace with your database password
+$dbname = "product_database";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Delete product
+if (isset($_GET['delete_id'])) {
+    $delete_id = $_GET['delete_id'];
+
+    // First, get the image path from the database before deletion
+    $sql = "SELECT image_path FROM products WHERE id = '$delete_id'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $image_path = $row['image_path'];
+
+        // Delete the product from the database
+        $delete_sql = "DELETE FROM products WHERE id = '$delete_id'";
+        if ($conn->query($delete_sql) === TRUE) {
+            // Delete the image from the server
+            if (file_exists($image_path)) {
+                unlink($image_path);
+            }
+            echo "Product deleted successfully.";
+        } else {
+            echo "Error deleting product: " . $conn->error;
+        }
+    }
+}
+
+// Fetch products from the database
+$sql = "SELECT * FROM products";
+$result = $conn->query($sql);
+
+// Check if there are products in the database
+if ($result->num_rows > 0) {
+    
+    
+
+    // Output data for each product
+    while($row = $result->fetch_assoc()) {
+      // Start the table to display data
+      ?>
+      <div id="imgs">
+<div id="view"><center>
+      <?php
+        echo "<h2>" . $row['product_name'] . "</h2>";
+        ?>
+
+        <?php
+        echo "<img src='" . $row['image_path'] . "' alt='" . $row['product_name'] . "' ><br>";
+        ?>
+
+        <?php
+        echo "<b>$" . number_format($row['price'], 2) . "</b> <br>";
+        echo "Published date:" . $row['published_date'] . "<br>";
+        echo "<a href='update-product.php?id=" . $row['id'] . "'>Update</a> | 
+                  <a href='delete-products.php?id=" . $row['id'] . "' onclick='return confirm(\"Are you sure you want to delete this product?\")'>Delete</a>";
+       
+            ?>
+            <br><a href="order.php">...Order...</a>
+              
+            </center>
+</div></div>
+      <?php
+    }
+   
+} else {
+    echo "No products found.";
+}
+
+// Close the database connection
+$conn->close();
+?>
+
+
+
+<br><br><br><br><br><br><br>
+          </body><br><br><br><br><br><br><br><br><br><br>
+          <footer> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &#169 Copyright 2024 by <b><i>TIMELESS TREASURES</i></b> | All rights reserved</footer>
+</body>
+</html>

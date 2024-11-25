@@ -1,0 +1,16 @@
+
+
+
+NB:befor you opent timeless procjt make sure you finish this
+
+------------------------------------------------------------
+
+1.Open your browser and go to localhost/  open PhpMyAdmin..
+2.Create database in your localhost and name it ("product_database").
+3.Import the database from the forder called Database.
+4.Copy the forder called timeless and pest in htdocs.
+5.Try to brows the project ("localhost/timeless/index.php")
+
+
+-----------------------------------------------------------
+                        Thank you!!!!
